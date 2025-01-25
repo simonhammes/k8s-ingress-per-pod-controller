@@ -71,6 +71,20 @@ func watchStatefulSets(client *kubernetes.Clientset, namespace string, labelSele
 }
 
 func createService(services v1.ServiceInterface, pod *core.Pod) {
+	var port int32
+	ports := pod.Spec.Containers[0].Ports
+
+	switch len(ports) {
+	case 0:
+		klog.Errorf("Pod %s does not specify any ports", pod.Name)
+		return
+	case 1:
+		port = ports[0].ContainerPort
+	default:
+		klog.Errorf("Pod %s specifies more than one port", pod.Name)
+		return
+	}
+
 	service := &core.Service{
 		ObjectMeta: meta.ObjectMeta{
 			Name:      pod.Name,
@@ -83,10 +97,9 @@ func createService(services v1.ServiceInterface, pod *core.Pod) {
 			},
 			Ports: []core.ServicePort{
 				{
-					Protocol: core.ProtocolTCP,
-					// TODO: Read from StatefulSet?
-					Port:       80,
-					TargetPort: intstr.FromInt(80),
+					Protocol:   core.ProtocolTCP,
+					Port:       port,
+					TargetPort: intstr.FromInt32(port),
 				},
 			},
 		},
