@@ -29,9 +29,16 @@ func main() {
 		klog.Fatal(err)
 	}
 
-	// TODO: Read from CLI or ENV
-	namespace := "default"
-	labelSelector := "app=nginx"
+	namespace := os.Getenv("NAMESPACE")
+	if namespace == "" {
+		klog.Fatal("NAMESPACE must be provided")
+	}
+
+	labelSelector := os.Getenv("LABEL_SELECTOR")
+	if labelSelector == "" {
+		klog.Fatal("LABEL_SELECTOR must be provided")
+	}
+
 	watchStatefulSets(client, namespace, labelSelector)
 }
 
