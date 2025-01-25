@@ -38,12 +38,8 @@ func main() {
 // TODO: Deployment -> StatefulSet
 // TODO: Support both
 func watchStatefulSets(client *kubernetes.Clientset, namespace string, labelSelector string) {
-	timeOut := int64(60)
-
 	options := meta.ListOptions{
 		LabelSelector: labelSelector,
-		// Watch: true,
-		TimeoutSeconds: &timeOut,
 	}
 
 	services := client.CoreV1().Services(namespace)
