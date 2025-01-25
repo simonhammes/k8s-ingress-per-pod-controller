@@ -35,8 +35,6 @@ func main() {
 	watchStatefulSets(client, namespace, labelSelector)
 }
 
-// TODO: Deployment -> StatefulSet
-// TODO: Support both
 func watchStatefulSets(client *kubernetes.Clientset, namespace string, labelSelector string) {
 	options := meta.ListOptions{
 		LabelSelector: labelSelector,
