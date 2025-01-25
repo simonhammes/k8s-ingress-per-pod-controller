@@ -48,8 +48,10 @@ func watchStatefulSets(client *kubernetes.Clientset, namespace string, labelSele
 	}
 
 	services := client.CoreV1().Services(namespace)
-	// TODO
-	watcher, _ := client.CoreV1().Pods(namespace).Watch(context.Background(), options)
+	watcher, err := client.CoreV1().Pods(namespace).Watch(context.Background(), options)
+	if err != nil {
+		klog.Fatalf("Could not watch pods: %v", err)
+	}
 
 	for event := range watcher.ResultChan() {
 		pod := event.Object.(*core.Pod)
